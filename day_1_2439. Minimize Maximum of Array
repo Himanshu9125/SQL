@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int minimizeArrayValue(vector<int>& nums) {
+       // idea behind this logic is to compute the average of the values of the array
+      // if the average is greater then the value stored in the ans then update it 
+        long long total=0;
+        long long ans=0;
+        int k=1;
+        for(auto i:nums){
+            total+=i;
+            long long x=ceil(double(total)/k++);// if the average of the values is not an integer then take the ceil value
+            ans=max(ans,x);// updating when the value of average is greater then the stored 
+        }
+        return ans;
+    }
+};
