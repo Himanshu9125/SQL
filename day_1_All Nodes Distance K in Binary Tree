@@ -1,0 +1,68 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void track_prnt(TreeNode* root, int k,
+                    unordered_map<TreeNode*, TreeNode*>& mp) {// step 2
+        queue<TreeNode*> q;// using concept of level order traversal declare a queue
+        q.push(root);
+        while (!q.empty()) { // check wether the queue is empty or not
+            int n = q.size();
+            for (int i = 0; i < n; i++) {
+                TreeNode* node = q.front(); // take the front value of the queue
+                q.pop();
+                if (node->left) { // check there is any left child of the node
+                    q.push(node->left);// if yes then push it to the queue
+                    mp[ node->left] =node;// and store the parent of this left child
+                }
+                if (node->right) {// check there is any right child of the node
+                    q.push(node->right);// if yes then push it to the queue
+                    mp[ node->right] =node;// and store the parent of this right child
+                }
+            }
+        }
+    }
+
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        vector<int> ans;// step 1 
+        unordered_map<TreeNode*, TreeNode*> mp_prnt;// take unodered map to keep the track of ancestor node 
+        track_prnt(root, k, mp_prnt);// call the function of to get the values in the map
+       unordered_map<TreeNode*, bool> visit;// step 3 take a hash to strore the recode of the visited nodes
+        queue<TreeNode*> q;// again apply the concept of level order and declare a queue
+        q.push(target);// push the target into the queue
+        visit[target] = 1;// and make it visited by set the value 1
+        int dis = 0;// this variable used to count the distance from the target node
+        while (!q.empty()) {// check wether the queue is empty or not
+            int n = q.size();
+            if(dis++==k)break;// check the condition 
+            for (int i = 0; i < n; i++) {
+                TreeNode* node = q.front();// take the front value of the queue
+                q.pop();
+                if (node->left && !visit[node->left]) {// if left child exist then push it to the queue and not visited
+                    q.push(node->left);
+                    visit[node ->left] = 1;
+                }
+                if (node->right && !visit[node->right]) {// if right child exist then push it to the queue and not visited
+                    q.push(node->right);
+                    visit[node->right] = 1;
+                }
+                if (mp_prnt[node] && !visit[mp_prnt[node]]) { // if node exist in track of parent map and it is not visited
+                    q.push(mp_prnt[node]);
+                    visit[mp_prnt[node]] = 1;
+                }
+            }
+        }
+        while (!q.empty()) { // the node remain in the queue are those node which are exactly k distance away from the target node
+            ans.push_back(q.front()->val);// taking all the nodes value from the queue and store it to the ans named vactor 
+            q.pop();
+        }
+        return ans;
+    }
+};
