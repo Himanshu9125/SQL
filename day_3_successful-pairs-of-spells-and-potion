@@ -1,0 +1,18 @@
+class Solution {
+public:
+    vector<int> successfulPairs(vector<int>& spells, vector<int>& position, long long success) {
+        sort(position.begin(),position.end() );//sort the position array
+        long long n=spells.size();
+        long long  m=position.size();
+         vector<int>nums(n);
+         for(int i=0;i<n;i++){
+            long long find=(success+spells[i]-1)/spells[i]; // finding the ceil value 
+            auto x=lower_bound(position.begin(),position.end(),find)-position.begin(); // finding the value in the position array
+            if(x<=m||x>=0){ // if index within the range
+              nums[i]=m-x;  
+            }
+         }
+     
+         return nums;       
+    }
+};
